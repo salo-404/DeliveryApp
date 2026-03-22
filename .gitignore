@@ -1,0 +1,10 @@
+# NODE JS dependencies
+node_modules/
+npm-debug.log*
+
+# Environments Variables
+.env
+
+# Project Files and Folder
+/Database
+/Logs
