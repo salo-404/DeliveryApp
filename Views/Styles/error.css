@@ -1,0 +1,136 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: #f3f5f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1.25rem;
+}
+
+/* Container */
+main {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Content Layout */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(0, 204, 188, 0.12);
+  color: #006b63;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.2px;
+}
+
+h1 {
+  font-size: 1.35rem;
+  color: #111;
+  line-height: 1.25;
+}
+
+p {
+  color: #444;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* "Input-like" info box (keeps the same visual language as your form) */
+.hint {
+  padding: 12px;
+  border: 1px solid #e2e5e7;
+  border-radius: 4px;
+  background: #fafbfb;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.hint code {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.9em;
+  color: #111;
+}
+
+/* Button Styling (same as your CSS) */
+.actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-top: 0.3rem;
+}
+
+a.button,
+button.button {
+  appearance: none;
+  background-color: #00ccbc;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.05s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 140px;
+}
+
+a.button:hover,
+button.button:hover {
+  background-color: #00b3a4;
+}
+
+a.button:active,
+button.button:active {
+  transform: scale(0.98);
+}
+
+/* Secondary button (still in same style family) */
+a.button.secondary {
+  background: transparent;
+  color: #00b3a4;
+  border: 1px solid #e2e5e7;
+}
+
+a.button.secondary:hover {
+  background: #f3f5f6;
+}
+
+.small {
+  font-size: 0.85rem;
+  color: #777;
+}
