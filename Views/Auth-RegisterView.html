@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deliveroo — Create Account</title>
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body>
+    <main>
+      <h1 style="margin-bottom: 1.5rem; font-size: 1.4rem; color: #111;">Create your account</h1>
+      <form method="POST" action="/auth/register">
+        <label>
+          Email Address:
+          <input
+            placeholder="you@example.com"
+            type="email"
+            name="userEmail"
+            required
+          />
+        </label>
+        <label>
+          Password:
+          <input
+            placeholder="Password"
+            type="password"
+            name="password"
+            required
+          />
+        </label>
+        <button type="submit">Create Account</button>
+      </form>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: #777; text-align: center;">
+        Already have an account? <a href="/login" style="color: #00ccbc;">Log in</a>
+      </p>
+    </main>
+  </body>
+</html>

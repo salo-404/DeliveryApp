@@ -1,19 +1,19 @@
 export default class User {
-  // An abstract Class
+  // An abstract Class — cannot be instantiated directly, only extended
 
   constructor(userId) {
     if (this.constructor === User) {
-      throw new Error("You cannot instantiate an Abstract Class `User`");
+      throw new Error("You cannot instantiate an Abstract Class `User`"); // enforces that only subclasses can be instantiated
     }
-    this.userId = userId;
+    this.userId = userId; // every user type (Customer, Courrier, Manager) shares this base property
   }
 
-  // They will be overriden by subclasses methods
+  // These static methods act as an abstract contract — every subclass MUST override them
   static async register() {
     if (this == User) {
-      throw new Error("Cannot call register() from an abstract class");
+      throw new Error("Cannot call register() from an abstract class"); // blocks direct calls on User itself
     }
-    throw new Error(`${this.name} must implement the register()`);
+    throw new Error(`${this.name} must implement the register()`); // forces subclasses that forgot to override to fail loudly
   }
 
   static async login() {
@@ -30,3 +30,6 @@ export default class User {
     throw new Error(`${this.name} must implement the logout()`);
   }
 }
+
+// ---- MISSING ----
+// No instance methods (e.g. getProfile()) — currently only static auth methods are defined

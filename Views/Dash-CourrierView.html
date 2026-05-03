@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deliveroo — Courrier Dashboard</title>
+    <link rel="stylesheet" href="/dashboard.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">Deliveroo — Courrier</span>
+      <form method="POST" action="/courrier/logout">
+        <button type="submit">Log out</button>
+      </form>
+    </nav>
+
+    <div class="container">
+
+      <div class="card">
+        <h2>Assigned Deliveries</h2>
+        <ul class="item-list">
+          {{assignments}}
+        </ul>
+      </div>
+
+    </div>
+  </body>
+</html>

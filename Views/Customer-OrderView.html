@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deliveroo — Order #{{orderId}}</title>
+    <link rel="stylesheet" href="/dashboard.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">Deliveroo</span>
+      <a href="/home" style="font-size:0.9rem; color:#00ccbc; text-decoration:none;">← Home</a>
+    </nav>
+
+    <div class="container">
+
+      <div class="card">
+        <h2>Order <span style="color:#999; font-weight:400; font-size:0.95rem;">#{{orderId}}</span></h2>
+        <span class="badge">{{orderStatus}}</span>
+      </div>
+
+      <div class="card">
+        <h2>Items</h2>
+        <ul class="item-list">
+          {{orderItems}}
+        </ul>
+        <p style="margin-top:1.2rem; font-weight:700; font-size:1.1rem;">
+          Total: <span style="color:#00ccbc;">${{totalPrice}}</span>
+        </p>
+      </div>
+
+      <div class="card">
+        <form method="POST" action="/order/cancel">
+          <input type="hidden" name="orderId" value="{{orderId}}" />
+          <button type="submit" class="danger">Cancel Order</button>
+        </form>
+      </div>
+
+    </div>
+  </body>
+</html>

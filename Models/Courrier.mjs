@@ -1,31 +1,36 @@
-import User from "./User.mjs";
-import { v4 } from "uuid";
-import bcrypt from "bcrypt";
-import { SALT_ROUNDS } from "../Utils/constants.mjs";
+import User from "./User.mjs"; // inherits the abstract User base class
+import { v4 } from "uuid"; // generates a unique ID for each new courrier
+import bcrypt from "bcrypt"; // handles password hashing and comparison
+import { SALT_ROUNDS } from "../Utils/constants.mjs"; // shared bcrypt cost factor
+import CourrierRepository from "../Database/CourrierRepository.mjs"; // data access layer for Courrier
 
 export default class Courrier extends User {
   constructor(userId, phoneNumber) {
-    super(userId);
-    this.phoneNumber = phoneNumber;
+    super(userId); // calls User constructor — sets this.userId
+    this.phoneNumber = phoneNumber; // couriers are identified by phone number
   }
 
-  // method overriding for Courrier
   static async register(phoneNumber, password) {
-    console.log("Registering a Courrier");
-    // Create a user Id out of UUID V4
-    const userId = v4();
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    // SHould be saved and stored inside the DB
+    const repo = new CourrierRepository();
+    const phoneExists = await repo.findByPhoneNumber(phoneNumber); // checks if this phone number is already registered
+    if (phoneExists) return phoneExists; // returns existing account instead of creating a duplicate
 
-    const newCourrier = new Courrier(userId, phoneNumber);
+    const userId = v4(); // generates a unique ID for this courrier
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS); // hashes the password before storing
+    const newCourrier = new Courrier(userId, phoneNumber); // creates the in-memory Courrier instance
+    await repo.createCourrier(userId, phoneNumber, hashedPassword); // persists the courrier to the DB
     return newCourrier;
   }
-  static async login() {}
-  static async logout() {}
+
+  static async login(phoneNumber, password) {
+    const repo = new CourrierRepository();
+    const account = await repo.findByPhoneNumber(phoneNumber); // looks up the courrier by phone number
+    if (!account) throw new Error("Phone number not found"); // no account exists for this phone number
+
+    const checkPassword = await bcrypt.compare(password, account.passwordHash); // compares input against stored hash
+    if (!checkPassword) throw new Error("Wrong Password"); // hash does not match — reject login
+
+    return account; // returns the DB row — contains userId needed for JWT
+  }
+
 }
-
-// // const courrier = new Courrier("user1", 70707070); // THIS IS WRONG
-// // WHAT IF he was not registered?
-
-// const courrier = await Courrier.register("70-707070", "pass123");
-// console.log(courrier);

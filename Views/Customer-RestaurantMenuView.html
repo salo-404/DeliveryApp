@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deliveroo — {{restaurantName}}</title>
+    <link rel="stylesheet" href="/dashboard.css" />
+  </head>
+  <body>
+    <nav>
+      <span class="brand">{{restaurantName}}</span>
+      <a href="/home" style="font-size:0.9rem; color:#00ccbc; text-decoration:none;">← Back</a>
+    </nav>
+
+    <div class="container">
+
+      <div class="card">
+        <h2>Menu</h2>
+        <ul class="item-list">
+          {{menuItems}}
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Your Cart</h2>
+        <ul class="item-list">
+          {{cartItems}}
+        </ul>
+        <p style="margin-top:1rem; font-weight:700; font-size:1.05rem;">
+          Total: <span style="color:#00ccbc;">${{totalPrice}}</span>
+        </p>
+        <form method="POST" action="/order/create" style="margin-top:1rem;">
+          <input type="hidden" name="restaurantId" value="{{restaurantId}}" />
+          <button type="submit" {{checkoutDisabled}}>Place Order</button>
+        </form>
+      </div>
+
+    </div>
+  </body>
+</html>

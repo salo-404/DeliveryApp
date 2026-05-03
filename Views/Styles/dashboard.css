@@ -1,0 +1,112 @@
+/* Reset & Base */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background-color: #f3f5f6;
+  min-height: 100vh;
+}
+
+/* Top Nav */
+nav {
+  background: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+nav .brand { font-weight: 800; font-size: 1.2rem; color: #00ccbc; }
+
+nav form button {
+  background: transparent;
+  border: 1px solid #e2e5e7;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+nav form button:hover { background: #f3f5f6; }
+
+/* Page Layout */
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.card h2 { font-size: 1.1rem; color: #111; margin-bottom: 1rem; }
+
+/* Status Badge */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(0,204,188,0.12);
+  color: #006b63;
+}
+
+/* List */
+ul.item-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+
+ul.item-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e5e7;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+/* Forms inside cards */
+.card form { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.card input {
+  padding: 10px 12px;
+  border: 1px solid #e2e5e7;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.card input:focus { outline: none; border-color: #00ccbc; }
+
+.card button {
+  background: #00ccbc;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.card button:hover { background: #00b3a4; }
+
+.card button.danger {
+  background: transparent;
+  color: #e53e3e;
+  border: 1px solid #e53e3e;
+}
+
+.card button.danger:hover { background: #fff5f5; }
+
+/* Empty state */
+.empty { color: #999; font-size: 0.9rem; text-align: center; padding: 1rem 0; }

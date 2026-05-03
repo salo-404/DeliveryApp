@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deliveroo — Courrier Login</title>
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body>
+    <main>
+      <h1 style="margin-bottom: 1.5rem; font-size: 1.4rem; color: #111;">Courrier Login</h1>
+      <form method="POST" action="/courrier/login">
+        <label>
+          Phone Number:
+          <input placeholder="+1 555 000 0000" type="tel" name="phoneNumber" required />
+        </label>
+        <label>
+          Password:
+          <input placeholder="Password" type="password" name="password" required />
+        </label>
+        <button type="submit">Log in</button>
+      </form>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: #777; text-align: center;">
+        New courrier? <a href="/courrier/register" style="color: #00ccbc;">Register</a>
+      </p>
+    </main>
+  </body>
+</html>
