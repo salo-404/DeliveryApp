@@ -9,21 +9,41 @@ import { renderHTML } from "../Utils/renderHTML.mjs"; // renders an HTML templat
 const repository = new OrderRepository(); // single repository instance reused across all handlers
 
 export const orderController = {
-  // handles POST /order/create — places a new order for the logged-in customer
-  create: async (req, res) => {
+  // handles POST /cart/add — adds one item to the customer's in-progress cart for a restaurant
+  addToCart: async (req, res) => {
     try {
-      const { userId } = await verifyToken(req); // reads the customer's userId from the JWT cookie
-      const { restaurantId } = await parseBody(req); // extracts the restaurant ID from the hidden form field
-      const activeOrders = await repository.findActiveByCustomerId(userId); // checks how many active orders the customer has
-      if (activeOrders.length >= OrderLimits.MAX_ACTIVE_ORDERS) { // enforces the 5-active-orders business rule
-        return errorController(HTTP_STATUS.BAD_REQUEST, req, res);
+      const { userId } = await verifyToken(req);
+      const { restaurantId, itemName, itemPrice } = await parseBody(req);
+      let cartOrder = await repository.findCartOrder(userId, restaurantId);
+      if (!cartOrder) {
+        const activeOrders = await repository.findActiveByCustomerId(userId);
+        if (activeOrders.length >= OrderLimits.MAX_ACTIVE_ORDERS) {
+          return errorController(HTTP_STATUS.BAD_REQUEST, req, res);
+        }
+        const orderId = v4();
+        await repository.createOrder(orderId, userId, restaurantId, OrderStatus.INCOMPLETE);
+        cartOrder = { orderId };
       }
-      const orderId = v4(); // generates a unique ID for this order
-      await repository.createOrder(orderId, userId, restaurantId, OrderStatus.SUBMITTED); // persists the order with Submitted status
-      res.writeHead(HTTP_STATUS.TEMP_REDIRECT, { Location: `/order?id=${orderId}` }); // redirects to the order detail page
+      await repository.addOrderItem(cartOrder.orderId, itemName, Number(itemPrice));
+      res.writeHead(HTTP_STATUS.TEMP_REDIRECT, { Location: `/restaurant/menu?id=${restaurantId}` });
       res.end();
     } catch {
-      errorController(HTTP_STATUS.SERVER_ERROR, req, res); // sends 500 if anything goes wrong
+      errorController(HTTP_STATUS.SERVER_ERROR, req, res);
+    }
+  },
+
+  // handles POST /order/create — submits the customer's existing cart for this restaurant
+  create: async (req, res) => {
+    try {
+      const { userId } = await verifyToken(req);
+      const { restaurantId } = await parseBody(req);
+      const cartOrder = await repository.findCartOrder(userId, restaurantId);
+      if (!cartOrder) return errorController(HTTP_STATUS.BAD_REQUEST, req, res);
+      await repository.updateStatus(cartOrder.orderId, OrderStatus.SUBMITTED);
+      res.writeHead(HTTP_STATUS.TEMP_REDIRECT, { Location: `/order?id=${cartOrder.orderId}` });
+      res.end();
+    } catch {
+      errorController(HTTP_STATUS.SERVER_ERROR, req, res);
     }
   },
 

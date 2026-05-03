@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS OrderItem (
     orderId VARCHAR(36) NOT NULL,
     itemName VARCHAR(100) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    UNIQUE KEY uq_order_item (orderId, itemName),
     FOREIGN KEY (orderId) REFERENCES \`Order\`(orderId)
 );
 

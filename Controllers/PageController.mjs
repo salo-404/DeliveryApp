@@ -5,8 +5,10 @@ import { renderHTML } from "../Utils/renderHTML.mjs"; // renders an HTML templat
 import { verifyToken } from "../Utils/token.mjs"; // reads and verifies the JWT from the request cookie
 import { HTTP_STATUS } from "../Utils/constants.mjs"; // HTTP status code constants
 import RestaurantRepository from "../Database/RestaurantRepository.mjs"; // reads restaurant and menu data from the DB
+import OrderRepository from "../Database/OrderRepository.mjs"; // reads the customer's active cart for this restaurant
 
 const restaurantRepo = new RestaurantRepository(); // single instance reused across all page handlers
+const orderRepo = new OrderRepository();
 
 export const pageController = {
   // serves GET /login — static login form, no data injection needed
@@ -48,25 +50,56 @@ export const pageController = {
   // serves GET /restaurant/menu?id=... — renders a restaurant's menu page for a logged-in customer
   restaurantMenu: async (req, res) => {
     try {
-      await verifyToken(req);
-      const url = new URL(req.url, `http://${req.headers.host}`); // parses the URL to extract query params
-      const restaurantId = url.searchParams.get("id"); // reads the restaurant ID from the ?id= query string
-      const restaurant = await restaurantRepo.findById(restaurantId); // fetches the restaurant row from the DB
-      if (!restaurant) return errorController(HTTP_STATUS.NOT_FOUND, req, res); // 404 if the restaurant doesn't exist
-      const items = await restaurantRepo.findMenuByRestaurantId(restaurantId); // fetches all menu items for this restaurant
+      const { userId } = await verifyToken(req);
+      const url = new URL(req.url, `http://${req.headers.host}`);
+      const restaurantId = url.searchParams.get("id");
+      const restaurant = await restaurantRepo.findById(restaurantId);
+      if (!restaurant) return errorController(HTTP_STATUS.NOT_FOUND, req, res);
+
+      const items = await restaurantRepo.findMenuByRestaurantId(restaurantId);
       const menuItems = items.length
-        ? items.map(i => `<li>${i.name} — $${Number(i.price).toFixed(2)}<br><small>${i.description ?? ""}</small></li>`).join("") // renders each item with name, price, and optional description
-        : "<li class='empty'>No menu items yet.</li>"; // fallback when the menu is empty
+        ? items.map(i =>
+            `<li>
+              <span>${i.name} — $${Number(i.price).toFixed(2)}</span>
+              <br><small>${i.description ?? ""}</small>
+              <form method="POST" action="/cart/add" style="display:inline; margin-left:1rem;">
+                <input type="hidden" name="restaurantId" value="${restaurantId}" />
+                <input type="hidden" name="itemName" value="${i.name}" />
+                <input type="hidden" name="itemPrice" value="${i.price}" />
+                <button type="submit">+ Add</button>
+              </form>
+            </li>`).join("")
+        : "<li class='empty'>No menu items yet.</li>";
+
+      // load any existing in-progress cart for this customer + restaurant
+      const cartOrder = await orderRepo.findCartOrder(userId, restaurantId);
+      let cartItems = "<li class='empty'>Your cart is empty.</li>";
+      let totalPrice = "0.00";
+      let checkoutDisabled = "disabled";
+
+      if (cartOrder) {
+        const cartRows = await orderRepo.findItemsByOrderId(cartOrder.orderId);
+        if (cartRows.length) {
+          cartItems = cartRows
+            .map(i => `<li>${i.itemName} × ${i.quantity} — $${(Number(i.price) * i.quantity).toFixed(2)}</li>`)
+            .join("");
+          totalPrice = cartRows
+            .reduce((sum, i) => sum + Number(i.price) * i.quantity, 0)
+            .toFixed(2);
+          checkoutDisabled = "";
+        }
+      }
+
       await renderHTML(res, "Customer-RestaurantMenuView.html", {
-        restaurantName: restaurant.restaurantName, // injected into {{restaurantName}} in the view
-        menuItems, // injected into {{menuItems}} in the view
-        cartItems: "<li class='empty'>Your cart is empty.</li>", // cart management not yet implemented
-        totalPrice: "0.00", // no items in cart yet
-        restaurantId, // injected into the hidden form field for order creation
-        checkoutDisabled: "disabled", // disables Place Order until cart management is built
+        restaurantName: restaurant.restaurantName,
+        menuItems,
+        cartItems,
+        totalPrice,
+        restaurantId,
+        checkoutDisabled,
       });
     } catch {
-      res.writeHead(HTTP_STATUS.TEMP_REDIRECT, { Location: "/login" }); // token missing or expired
+      res.writeHead(HTTP_STATUS.TEMP_REDIRECT, { Location: "/login" });
       res.end();
     }
   },

@@ -33,6 +33,13 @@ export default class CourrierRepository {
     return rows[0];
   }
 
+  async findAll() {
+    const [rows] = await this.#database.query(
+      `SELECT userId, phoneNumber FROM Courrier`,
+    );
+    return rows;
+  }
+
   // UPDATE
 
   // DELETE

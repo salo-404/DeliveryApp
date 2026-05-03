@@ -13,7 +13,7 @@ export class Router {
   }
 
   #notFound(req, res) {
-    errorController(HTTP_STATUS.NOT_FOUND, req, res); // delegates 404 handling to the error controller — will crash because errorController is not imported
+    errorController(HTTP_STATUS.NOT_FOUND, req, res);
   }
 
   dispatch = async (req, res) => {
@@ -31,7 +31,7 @@ export class Router {
       await handler(req, res); // calls the handler — await supports async controllers
     } catch (error) {
       console.log(error);
-      errorController(HTTP_STATUS.SERVER_ERROR, req, res); // handles any uncaught controller error as a 500 — will crash because errorController is not imported
+      errorController(HTTP_STATUS.SERVER_ERROR, req, res);
     }
   };
 }

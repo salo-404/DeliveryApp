@@ -25,7 +25,14 @@ export default class CustomerRepository {
     return rows[0]; // returns the first (and only expected) matching row as a plain object
   }
 
-  async findCustomerById(customerId){} // stub — body not yet implemented
+  async findCustomerById(customerId) {
+    const [rows] = await this.#database.query(
+      `SELECT * FROM Customer WHERE userId = ?`,
+      [customerId],
+    );
+    if (rows.length === 0) return null;
+    return rows[0];
+  }
 
   // UPDATE
 

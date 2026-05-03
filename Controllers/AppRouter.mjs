@@ -43,12 +43,13 @@ router.add("POST", "/restaurant/logout", restaurantController.logout); // handle
 router.add("GET", "/restaurant/menu", pageController.restaurantMenu); // serves the restaurant menu page — expects ?id= query param
 router.add("POST", "/restaurant/menu/add", restaurantController.addMenuItem); // handles adding a new menu item from the manager dashboard
 
-// Orders
-router.add("POST", "/order/create", orderController.create); // handles order placement from the restaurant menu page
+// Cart & Orders
+router.add("POST", "/cart/add", orderController.addToCart); // adds one item to the customer's in-progress cart
+router.add("POST", "/order/create", orderController.create); // submits the in-progress cart as a placed order
 router.add("GET", "/order", orderController.view); // serves the order detail page — expects ?id= query param
 router.add("POST", "/order/cancel", orderController.cancel); // handles order cancellation from the order detail page
+router.add("POST", "/order/assign", restaurantController.assignCourier); // manager assigns a courier to a submitted order
 
-router.add("PUT", "/order/modify", orderController.cancel);
 // Courrier Status
 router.add("POST", "/courrier/status", courrierController.updateStatus); // handles delivery status update from the courrier dashboard
 

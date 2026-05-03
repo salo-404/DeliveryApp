@@ -16,8 +16,9 @@ export default class OrderRepository {
 
   async addOrderItem(orderId, itemName, price) {
     await this.#database.query(
-      `INSERT INTO OrderItem(orderId, itemName, price) VALUES (?, ?, ?)`, // inserts one item line for this order
-      [orderId, itemName, price], // parameterized — prevents SQL injection
+      `INSERT INTO OrderItem(orderId, itemName, price, quantity) VALUES (?, ?, ?, 1)
+       ON DUPLICATE KEY UPDATE quantity = quantity + 1`,
+      [orderId, itemName, price],
     );
   }
 
@@ -55,12 +56,21 @@ export default class OrderRepository {
     return rows; // returns all non-cancelled orders for this restaurant
   }
 
+  async findCartOrder(customerId, restaurantId) {
+    const [rows] = await this.#database.query(
+      `SELECT * FROM \`Order\` WHERE customerId = ? AND restaurantId = ? AND status = ?`,
+      [customerId, restaurantId, "Incomplete Cart"],
+    );
+    if (rows.length === 0) return null;
+    return rows[0];
+  }
+
   async findActiveByCustomerId(customerId) {
     const [rows] = await this.#database.query(
-      `SELECT * FROM \`Order\` WHERE customerId = ? AND status != ?`, // excludes delivered and cancelled orders
-      [customerId, "Delivered"],
+      `SELECT * FROM \`Order\` WHERE customerId = ? AND status NOT IN (?, ?)`,
+      [customerId, "Delivered", "Incomplete Cart"],
     );
-    return rows; // used to enforce the MAX_ACTIVE_ORDERS business rule
+    return rows;
   }
 
   // UPDATE
