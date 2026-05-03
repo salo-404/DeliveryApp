@@ -1,13 +1,17 @@
 # #git ignore itself
-# .gitignore
+.gitignore
+
+package.json
+TODO.md
 
 # # NODE JS dependencies
 node_modules/
 # npm-debug.log*
 
 # # Environments Variables
-# .env
+.env
 
 # # Project Files and Folder
 # /Database
-# /Logs
+/Logs
+
