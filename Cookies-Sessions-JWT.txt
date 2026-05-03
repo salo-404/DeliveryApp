@@ -3,14 +3,6 @@
   A 1-Hour Teaching Session (Delivery App — Real Code Edition)
 ================================================================================
 
-AGENDA
-------
-  PART 1 — The Full-Stack Journey            (~15 min)
-  PART 2 — Cookies, Sessions & JWT           (~25 min)
-  PART 3 — Authorization as a Guard          (~10 min)
-  PART 4 — Redirection                       (~5  min)
-  PART 5 — End-to-End Login Walkthrough      (~5  min)
-
 ================================================================================
 PART 1 — THE FULL-STACK JOURNEY
 ================================================================================
@@ -293,6 +285,51 @@ DISADVANTAGES:
 WHEN TO USE: Small to medium applications with a single server.
   Frameworks like Express.js + express-session use this approach.
 
+HOW IT WORKS IN THIS PROJECT:
+  This app uses server-side sessions stored in a MySQL table called Session.
+  The token is NOT a JWT — it is a random, opaque 64-character hex string
+  that means nothing on its own. Its only purpose is to act as a key into
+  the Session table.
+
+  1. User logs in with correct credentials.
+
+     // token.mjs — issueToken()
+     const token = randomBytes(32).toString("hex");
+     // → "a3f8c1d4e9b2...  (64 random hex characters, unpredictable)"
+
+     await db.query(
+       "INSERT INTO Session (token, userId, role, userEmail, restaurantName) VALUES (?, ?, ?, ?, ?)",
+       [token, user.userId, role, user.email ?? null, user.restaurantName ?? null]
+     );
+     res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/; SameSite=Strict; Max-Age=3600`);
+
+  2. The browser stores this cookie and sends it on every future request.
+     It is just an opaque string — useless to anyone who intercepts it
+     unless they also have access to the server's database.
+
+  3. On a protected request, the server reads the token and looks it up:
+
+     // token.mjs — verifyToken()
+     const { token } = parseCookies(req);
+     if (!token) throw new Error("No token found");
+     const [rows] = await db.query("SELECT * FROM Session WHERE token = ?", [token]);
+     if (!rows.length) throw new Error("Invalid or expired session");
+     return rows[0]; // { userId, role, userEmail, restaurantName }
+
+     There is no cryptography here — just a database lookup.
+     If the token exists in the table, the user is authenticated.
+     The returned row gives the controller everything it needs (userId, role, etc.).
+
+  4. On logout, the session row is deleted:
+
+     // token.mjs — revokeToken()
+     const { token } = parseCookies(req);
+     if (token) await db.query("DELETE FROM Session WHERE token = ?", [token]);
+
+     The cookie is then cleared on the client side with Max-Age=0.
+     Because the row no longer exists, any future request with the same
+     cookie value will fail the lookup and be treated as unauthenticated.
+
 --------------------------------------------------------------------------------
 SOLUTION 3 — JSON WEB TOKENS (JWT)
 --------------------------------------------------------------------------------
@@ -323,10 +360,9 @@ WHY IS IT TAMPER-PROOF?
   to "Manager"), the signature will no longer match. The server rejects it.
   The attacker cannot forge a valid signature without knowing the secret key.
 
-HOW IT WORKS IN THIS PROJECT:
+HOW IT WORKS IN THEORY (not used in this project — kept for your understanding):
   1. User logs in successfully.
 
-     // token.mjs — issueToken()
      const token = jwt.sign(
        { userId: user.userId, role: "Customer", userEmail: user.email },
        process.env.JWT_SECRET,       // the server's secret key (in .env)
@@ -339,19 +375,17 @@ HOW IT WORKS IN THIS PROJECT:
 
   3. On a protected request, the server reads and verifies the token:
 
-     // token.mjs — verifyToken()
-     const { token } = parseCookies(req);        // read cookie from request header
-     if (!token) throw new Error("No token");    // not logged in
+     const { token } = parseCookies(req);
+     if (!token) throw new Error("No token");
      return jwt.verify(token, process.env.JWT_SECRET); // verify signature + expiry
 
      jwt.verify() does two things simultaneously:
        a) Checks that the signature is valid (token was not tampered with)
        b) Checks that the token has not expired
-     If either fails, it throws an error.
+     If either fails, it throws an error. No database query needed.
 
   4. The decoded payload is returned:
      { userId: "abc-123", role: "Customer", userEmail: "karim@example.com" }
-     The controller uses this to know who is making the request.
 
 ADVANTAGES OF JWT:
   - Stateless: the server stores NOTHING. No session database needed.
@@ -379,7 +413,7 @@ SIDE-BY-SIDE COMPARISON
   Scales easily?    Yes             No (shared DB)  Yes
   Instant logout?   Yes             Yes             No (must wait for expiry)
   Sensitive data?   Exposed         Safe (server)   Encoded (not encrypted)
-  Used in this app? No              No              YES
+  Used in this app? No              YES             No
 
 ================================================================================
 PART 3 — AUTHORIZATION AS A GUARD
@@ -388,7 +422,7 @@ PART 3 — AUTHORIZATION AS A GUARD
 AUTHENTICATION vs AUTHORIZATION — THE KEY DIFFERENCE:
 
   AUTHENTICATION answers: "Who are you?"
-    Verifying identity — checking email + password, issuing a JWT.
+    Verifying identity — checking email + password, issuing a session token.
 
   AUTHORIZATION answers: "Are you allowed to do this?"
     Checking if the authenticated user has the right ROLE or PERMISSION
@@ -400,7 +434,7 @@ THE GUARD PATTERN IN THIS PROJECT
 
 Every protected controller action starts with verifyToken(req).
 This is the guard. If it throws, the action is blocked. If it succeeds,
-the decoded payload (userId, role) is available to the controller.
+the session row (userId, role, userEmail, ...) is available to the controller.
 
 PATTERN — Authentication-only guard (you just need to be logged in):
 
@@ -446,30 +480,32 @@ PATTERN — Role-based authorization (you need to be a MANAGER):
       } catch { ... }
     }
 
-    A customer's JWT has role: "Customer" and no restaurant.
+    A customer's session has role: "Customer" and no restaurant.
     Even if they somehow hit POST /restaurant/menu/add, findByManagerId()
     returns null and the guard blocks them.
 
-HOW THE ROLE IS EMBEDDED IN THE TOKEN:
+HOW THE ROLE IS STORED IN THE SESSION:
 
     // token.mjs — issueToken()
-    jwt.sign({ userId: user.userId, role }, JWT_SECRET, ...)
-    //                              ^^^^
-    //   "Customer" | "Courrier" | "Manager"
+    // The role is written into the Session row at login time.
+    await db.query(
+      "INSERT INTO Session (token, userId, role, userEmail, restaurantName) VALUES (?, ?, ?, ?, ?)",
+      [token, user.userId, role, user.email ?? null, user.restaurantName ?? null]
+    );
 
     // authController — customer login
-    issueToken(res, customer, UserRoles.CUSTOMER);
+    issueToken(res, customer, UserRoles.CUSTOMER);  // role = "Customer"
 
     // courrierController — courrier login
-    issueToken(res, courrier, UserRoles.COURRIER);
+    issueToken(res, courrier, UserRoles.COURRIER);  // role = "Courrier"
 
     // restaurantController — manager login
-    issueToken(res, manager, UserRoles.MANAGER);
+    issueToken(res, manager, UserRoles.MANAGER);    // role = "Manager"
 
-Each user type receives a different role in their token. You can extend
-the guard to check the role explicitly:
+Each user type receives a different role stored in the Session table.
+verifyToken() returns the full row, so the role is always available:
 
-    const { userId, role } = verifyToken(req);
+    const { userId, role } = await verifyToken(req);
     if (role !== UserRoles.MANAGER) {
       return errorController(HTTP_STATUS.UNAUTHORIZED, req, res);
     }
@@ -561,16 +597,17 @@ SCENARIO: Customer visits the login page, enters email + password, submits.
 
 6. CONTROLLER (back in authController.login):
    c. issueToken(res, customer, UserRoles.CUSTOMER)
-      → jwt.sign({ userId: "abc-123", role: "Customer", userEmail: "karim@..." }, SECRET)
-      → returns a signed JWT string
-      → res.setHeader("Set-Cookie", "token=eyJ...; HttpOnly; Path=/; SameSite=Strict; Max-Age=3600")
+      → randomBytes(32).toString("hex")
+      → generates: "a3f8c1d4e9b27f..." (64-char random hex, unpredictable)
+      → INSERT INTO Session (token, userId, role, userEmail, ...) VALUES (...)
+      → res.setHeader("Set-Cookie", "token=a3f8c1...; HttpOnly; Path=/; SameSite=Strict; Max-Age=3600")
 
    d. res.writeHead(302, { Location: "/home" })
    e. res.end()
 
 7. BROWSER receives:
    HTTP/1.1 302 Found
-   Set-Cookie: token=eyJ...; HttpOnly; ...
+   Set-Cookie: token=a3f8c1...; HttpOnly; ...
    Location: /home
 
    → Browser stores the cookie (cannot be read by JavaScript — HttpOnly)
@@ -578,15 +615,16 @@ SCENARIO: Customer visits the login page, enters email + password, submits.
 
 8. BROWSER sends:
    GET /home HTTP/1.1
-   Cookie: token=eyJ...
+   Cookie: token=a3f8c1...
 
 9. ROUTER: GET /home → pageController.home
 
 10. CONTROLLER (PageController.mjs — home):
     a. verifyToken(req)
        → parseCookies(req) → extracts "token" value from Cookie header
-       → jwt.verify(token, SECRET) → validates signature + checks not expired
-       → returns { userId: "abc-123", role: "Customer", userEmail: "karim@..." }
+       → SELECT * FROM Session WHERE token = 'a3f8c1...'
+       → row found → returns { userId: "abc-123", role: "Customer", userEmail: "karim@..." }
+       → no cryptography — just a database lookup
 
     b. restaurantRepo.findAll()
        → REPOSITORY: SELECT * FROM Restaurant
@@ -599,19 +637,23 @@ SCENARIO: Customer visits the login page, enters email + password, submits.
 11. BROWSER renders the home page. The customer is now logged in.
 --------------------------------------------------------------------------------
 
-WHAT HAPPENS IF THE TOKEN IS EXPIRED?
+WHAT HAPPENS IF THE TOKEN IS NOT IN THE DATABASE?
+(e.g. after logout, or if someone invents a fake token)
 
-Step 10a: jwt.verify() throws "TokenExpiredError"
+Step 10a: SELECT * FROM Session WHERE token = ? → 0 rows
+  → verifyToken() throws "Invalid or expired session"
   → catch block runs
   → res.writeHead(302, { Location: "/login" })
   → Browser redirected back to login
-  → Customer must log in again
 
-WHAT HAPPENS IF SOMEONE TAMPERS WITH THE TOKEN?
+WHAT HAPPENS IF SOMEONE COPIES AN OLD TOKEN AFTER LOGOUT?
 
-Step 10a: jwt.verify() throws "JsonWebTokenError"
-  → Same catch block → redirected to login
-  → The tampered token is useless
+Step 10a: The row was deleted by revokeToken() at logout time.
+  → SELECT * FROM Session WHERE token = ? → 0 rows
+  → Same error → redirected to login
+  → The stolen token is permanently useless because the server-side record
+    no longer exists. This is why server-side sessions give instant, reliable
+    logout — something JWT cannot guarantee.
 
 ================================================================================
 SUMMARY — THE LAYERS AND THEIR RESPONSIBILITIES
@@ -625,20 +667,24 @@ SUMMARY — THE LAYERS AND THEIR RESPONSIBILITIES
   REPOSITORY           Executes SQL. Returns raw data. Knows nothing about HTTP.
   DATABASE (Singleton) Manages the connection pool. Executes parameterized queries.
 
-  TOKEN (JWT)          Carries identity between requests in an HttpOnly cookie.
-  issueToken()         Called after successful login. Signs and sets the cookie.
-  verifyToken()        Called at the start of every protected handler. The guard.
+  TOKEN (Session)      Opaque 64-char hex stored in DB. Sent as an HttpOnly cookie.
+  issueToken()         Called after login. Generates token, writes Session row, sets cookie.
+  verifyToken()        Called at the start of every protected handler. Looks up Session row.
+  revokeToken()        Called on logout. Deletes the Session row — instant invalidation.
 
 ================================================================================
 KEY SECURITY PRINCIPLES DEMONSTRATED IN THIS PROJECT
 ================================================================================
 
   1. Passwords are HASHED with bcrypt — never stored in plain text.
-  2. JWTs are SIGNED — cannot be tampered with without the secret key.
+  2. Session tokens are RANDOM and OPAQUE — a 64-char hex string with no
+     meaning outside the database. Guessing a valid token is computationally
+     impossible (2^256 possibilities).
   3. Cookies are HttpOnly — JavaScript cannot steal the token (XSS protection).
   4. Cookies are SameSite=Strict — CSRF protection.
   5. SQL uses parameterized queries (?) — SQL Injection protection.
-  6. Tokens expire (Max-Age=3600, expiresIn) — limits damage from stolen tokens.
+  6. Logout DELETES the Session row — stolen tokens are immediately invalidated,
+     not just forgotten by the browser.
   7. Ownership checks (order.customerId !== userId) — horizontal privilege escalation protection.
   8. DB is a Singleton — prevents connection pool exhaustion.
 
