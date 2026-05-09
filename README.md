@@ -254,24 +254,51 @@ DeliveryApp/
 
 ## Student Continuation
 
-The following three features are **intentionally left incomplete** for you to
-implement as part of the course.  Read `TODO.md` for detailed instructions and
-code skeletons.
+## What Was Implemented
 
-### 1. `Logger` class — `Utils/Logger.mjs`
-A structured logging utility with levels (`DEBUG`, `INFO`, `WARN`, `ERROR`)
-that writes timestamped messages to the console and to `Logs/app.log`.
+### 1. `Logger` Class — `Utils/Logger.mjs`
+A structured logging utility with levels (`DEBUG`, `INFO`, `WARN`, `ERROR`) that writes timestamped messages to the console and to `Logs/app.log`.
 
-### 2. `Config` class — `Utils/Config.mjs`
-A singleton that reads all environment variables at startup, validates required
-ones, and exposes them as typed properties — replacing raw `process.env.*`
-calls across the codebase.
+### 2. `Config` Class — `Utils/Config.mjs`
+A singleton that reads all environment variables at startup, validates required ones, and exposes them as typed properties — replacing raw `process.env.*` calls across the codebase.
 
-### 3. `logout()` on User subclasses
-`Customer`, `Courrier`, and `RestaurantManager` all inherit an abstract
-`logout()` from `User` that currently throws.  Each subclass must override it
-to revoke the session token and clear the cookie.
+### 3. `logout()` on User Subclasses
+`Customer`, `Courrier`, and `RestaurantManager` all override the abstract `logout()` from `User` to revoke the session token and clear the cookie.
 
-> The `Guard/Guard.mjs` class is also fully implemented but not yet wired into
-> any controller.  Replacing the manual `verifyToken()` calls with the chainable
-> guard is a good stretch goal.
+### 4. UI/UX Enhancements
+- Enhanced **Login** page
+- Enhanced **Dashboard** for customers, managers, and couriers
+- Styled **Error** pages (400, 401, 404, 500)
+
+---
+
+## UI Preview
+
+### Login Page
+![Login Page]("C:\Users\user\Desktop\uni\sem6\web\DeliveryApp\screens uiux\login page .png")
+
+### Customer Dashboard
+![Customer Dashboard](Public/screenshots/customer-dashboard.png)
+
+### Restaurant Dashboard
+![Restaurant Dashboard](Public/screenshots/restaurant-dashboard.png)
+
+### Courier Dashboard
+![Courier Dashboard](Public/screenshots/courier-dashboard.png)
+
+### Error Page
+![Error Page](Public/screenshots/error.png)
+
+---
+
+## Project Overview
+
+### What the app does
+
+| Actor | Can do |
+|---|---|
+| **Customer** | Register, log in, browse restaurants, build a cart, place and cancel orders |
+| **Restaurant Manager** | Register, log in, manage their menu, view incoming orders, assign a courier |
+| **Courier** | Register, log in, view assigned deliveries, update delivery status |
+
+### Order lifecycle
