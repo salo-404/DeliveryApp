@@ -51,5 +51,5 @@ export default class Logger {
   }
 }
 
-// Export a single shared instance so all files use the same log file.
+// Export a single shared instance so all files use the same log file
 export const logger = new Logger();
