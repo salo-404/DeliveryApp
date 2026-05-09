@@ -15,7 +15,7 @@ export default class Courrier extends User {
   static async register(phoneNumber, password) {
     logger.debug("Checking whether the courier phone number is already registered.");
     const repo = new CourrierRepository();
-    const phoneExists = await repo.findByPhoneNumber(phoneNumber); // checks if this phone number is already registered
+    const phoneExists = await repo.findByPhoneNumber(phoneNumber); // checks if this phone number is already registered.
     if (phoneExists) {
       logger.info("Courier registration skipped because the phone number is already in use.");
       return phoneExists; // returns as existing account instead of creating a duplicate
