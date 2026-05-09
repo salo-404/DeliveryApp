@@ -21,13 +21,13 @@ export const authController = {
   // handles POST /auth/login — verifies credentials and issues a JWT cookie
   login: async (req, res) => {
     try {
-      const { userEmail, password } = await parseBody(req); // extracts email and password from the form submission
-      const customer = await Customer.login(userEmail, password); // verifies email exists and password matches the stored hash
+      const { userEmail, password } = await parseBody(req); // extracts  email and password from the form submission
+      const customer = await Customer.login(userEmail, password); //verifies email exists and password matches the stored hash
       await issueToken(res, customer, UserRoles.CUSTOMER);
       res.writeHead(HTTP_STATUS.TEMP_REDIRECT, { Location: "/home" });
       res.end();
     } catch {
-      errorController(HTTP_STATUS.UNAUTHORIZED, req, res); // sends 401 error page if credentials are wrong
+      errorController(HTTP_STATUS.UNAUTHORIZED, req, res); // sends 401 error page if credentials are wrong.
     }
   },
 
