@@ -7,21 +7,52 @@
   </head>
   <body>
     <main>
-      <h1 style="margin-bottom: 1.5rem; font-size: 1.4rem; color: #111;">Register your Restaurant</h1>
-      <form method="POST" action="/restaurant/register">
-        <label>
-          Restaurant Name:
-          <input placeholder="e.g. Pizza Palace" type="text" name="restaurantName" required />
-        </label>
-        <label>
-          Password:
-          <input placeholder="Password" type="password" name="password" required />
-        </label>
-        <button type="submit">Create Account</button>
-      </form>
-      <p style="margin-top: 1rem; font-size: 0.9rem; color: #777; text-align: center;">
-        Already registered? <a href="/restaurant/login" style="color: #00ccbc;">Log in</a>
-      </p>
+      <div class="auth-shell">
+        <section class="auth-brand">
+          <div>
+            <span class="eyebrow">Restaurant signup</span>
+            <h1>Set up your restaurant profile with a strong first impression.</h1>
+            <p>
+              Register once and get a polished entry point for menu management and
+              order handling.
+            </p>
+          </div>
+          <div class="auth-points">
+            <div class="auth-point">
+              <strong>Professional setup</strong>
+              <span>Keep your public-facing workflow easy to manage.</span>
+            </div>
+            <div class="auth-point">
+              <strong>Operational ready</strong>
+              <span>Move from signup to live order management smoothly.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="auth-panel">
+          <div class="panel-card">
+            <span class="panel-kicker">Create profile</span>
+            <h2 class="panel-title">Register your restaurant</h2>
+            <p class="panel-copy">Add your restaurant name and choose a password.</p>
+
+            <form method="POST" action="/restaurant/register">
+              <label>
+                Restaurant name
+                <input placeholder="e.g. Pizza Palace" type="text" name="restaurantName" required />
+              </label>
+              <label>
+                Password
+                <input placeholder="Create a password" type="password" name="password" required />
+              </label>
+              <button type="submit">Create account</button>
+            </form>
+
+            <p class="auth-foot">
+              Already registered? <a href="/restaurant/login">Log in</a>
+            </p>
+          </div>
+        </section>
+      </div>
     </main>
   </body>
 </html>

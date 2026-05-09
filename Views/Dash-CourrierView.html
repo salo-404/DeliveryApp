@@ -7,21 +7,43 @@
   </head>
   <body>
     <nav>
-      <span class="brand">Deliveroo — Courrier</span>
+      <span class="brand">Deliveroo <strong>Courrier</strong></span>
       <form method="POST" action="/courrier/logout">
         <button type="submit">Log out</button>
       </form>
     </nav>
 
-    <div class="container">
+    <div class="container dashboard-shell">
+      <section class="hero-card">
+        <span class="section-badge">Courier dashboard</span>
+        <h1>Stay focused on the deliveries that matter right now.</h1>
+        <p>
+          Review assigned jobs, track delivery progress, and keep your route organized with fewer distractions.
+        </p>
+        <div class="hero-metrics">
+          <div class="metric">
+            <strong>Assignment clarity</strong>
+            <span>See the current load at a glance.</span>
+          </div>
+          <div class="metric">
+            <strong>Route ready</strong>
+            <span>Move through deliveries with confidence.</span>
+          </div>
+        </div>
+      </section>
 
-      <div class="card">
-        <h2>Assigned Deliveries</h2>
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <span class="section-badge">Active work</span>
+            <h2>Assigned Deliveries</h2>
+          </div>
+          <p>Use this list to keep track of what is assigned and what is next.</p>
+        </div>
         <ul class="item-list">
           {{assignments}}
         </ul>
-      </div>
-
+      </section>
     </div>
   </body>
 </html>

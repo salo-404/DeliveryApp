@@ -7,34 +7,43 @@
   </head>
   <body>
     <nav>
-      <span class="brand">Deliveroo</span>
-      <a href="/home" style="font-size:0.9rem; color:#00ccbc; text-decoration:none;">← Home</a>
+      <span class="brand">Deliveroo <strong>Orders</strong></span>
+      <a class="back-link" href="/home">← Home</a>
     </nav>
 
-    <div class="container">
+    <div class="container dashboard-shell">
+      <section class="hero-card detail-hero">
+        <span class="section-badge">Order details</span>
+        <div class="order-title">
+          <h1>Order <span>#{{orderId}}</span></h1>
+          <span class="badge">{{orderStatus}}</span>
+        </div>
+        <p class="hero-copy">Review the items, total, and current order state in one place.</p>
+      </section>
 
       <div class="card">
-        <h2>Order <span style="color:#999; font-weight:400; font-size:0.95rem;">#{{orderId}}</span></h2>
-        <span class="badge">{{orderStatus}}</span>
-      </div>
-
-      <div class="card">
-        <h2>Items</h2>
+        <div class="card-header">
+          <div>
+            <span class="section-badge">Items</span>
+            <h2>What is in this order</h2>
+          </div>
+          <p class="subtle-copy">A quick view of the line items and the full order total.</p>
+        </div>
         <ul class="item-list">
           {{orderItems}}
         </ul>
-        <p style="margin-top:1.2rem; font-weight:700; font-size:1.1rem;">
-          Total: <span style="color:#00ccbc;">${{totalPrice}}</span>
+        <p class="order-total">
+          <span>Total</span>
+          <span>${{totalPrice}}</span>
         </p>
       </div>
 
-      <div class="card">
+      <div class="card page-actions">
         <form method="POST" action="/order/cancel">
           <input type="hidden" name="orderId" value="{{orderId}}" />
-          <button type="submit" class="danger">Cancel Order</button>
+          <button type="submit" class="danger-button">Cancel Order</button>
         </form>
       </div>
-
     </div>
   </body>
 </html>

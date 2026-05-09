@@ -32,6 +32,21 @@ export const orderController = {
     }
   },
 
+  // handles POST /cart/remove — removes an item from the customer's in-progress cart for a restaurant
+  removeFromCart: async (req, res) => {
+    try {
+      const { userId } = await verifyToken(req);
+      const { restaurantId, itemName } = await parseBody(req);
+      const cartOrder = await repository.findCartOrder(userId, restaurantId);
+      if (!cartOrder) return errorController(HTTP_STATUS.BAD_REQUEST, req, res);
+      await repository.removeOrderItem(cartOrder.orderId, itemName);
+      res.writeHead(HTTP_STATUS.TEMP_REDIRECT, { Location: `/restaurant/menu?id=${restaurantId}` });
+      res.end();
+    } catch {
+      errorController(HTTP_STATUS.SERVER_ERROR, req, res);
+    }
+  },
+
   // handles POST /order/create — submits the customer's existing cart for this restaurant
   create: async (req, res) => {
     try {
@@ -57,9 +72,18 @@ export const orderController = {
       if (!order) return errorController(HTTP_STATUS.NOT_FOUND, req, res); // sends 404 if the order doesn't exist
       const items = await repository.findItemsByOrderId(orderId); // fetches all items belonging to this order
       const orderItems = items.length
-        ? items.map(i => `<li>${i.itemName} — $${i.price}</li>`).join("") // builds the item list HTML
+        ? items.map(i => `
+            <li>
+              <div class="item-row">
+                <div>
+                  <div class="item-title">${i.itemName}</div>
+                  <div class="item-meta">Quantity: ${i.quantity}</div>
+                </div>
+                <div class="item-price">$${(Number(i.price) * i.quantity).toFixed(2)}</div>
+              </div>
+            </li>`).join("") // builds the item list HTML
         : "<li class='empty'>No items in this order.</li>"; // fallback when the order has no items yet
-      const totalPrice = items.reduce((sum, i) => sum + Number(i.price), 0).toFixed(2); // sums item prices to two decimals
+      const totalPrice = items.reduce((sum, i) => sum + Number(i.price) * Number(i.quantity), 0).toFixed(2); // sums item prices and quantities to two decimals
       await renderHTML(res, "Customer-OrderView.html", {
         orderId: order.orderId, // injected into {{orderId}} in the view
         orderStatus: order.status, // injected into {{orderStatus}} in the view

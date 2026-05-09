@@ -2,25 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="error.css" />
+    <link rel="stylesheet" href="/error.css" />
     <title>500 - Server Error</title>
   </head>
   <body>
-    <main>
-      <div class="stack">
-        <div class="badge">500 - Server Internal Error</div>
-      </div>
-      <h1>Cannot reach Server</h1>
-      <p>
-        The link might be broken, the page may have moved, or you might not have
-        access.
-      </p>
-      <div class="actions">
-        <a class="button" href="/">Go back to Home</a>
-      </div>
-      <p class="small">
-        If you think this is a mistake, check the URL or contact support.
-      </p>
+    <main class="error-shell">
+      <section class="error-card">
+        <span class="error-kicker">500 Server Error</span>
+        <h1 class="error-title">Something went wrong on our side.</h1>
+        <p class="error-message">
+          The server ran into a problem while handling this request. Please try again in a moment.
+        </p>
+        <div class="error-grid">
+          <div class="error-note">
+            <strong>Temporary issue</strong>
+            <span>This usually clears once the server recovers.</span>
+          </div>
+          <div class="error-note">
+            <strong>Try again later</strong>
+            <span>Reload the page after a short wait or return to the homepage.</span>
+          </div>
+        </div>
+        <div class="error-actions">
+          <a class="primary" href="/">Go back to Home</a>
+          <a class="secondary" href="javascript:history.back()">Go back</a>
+        </div>
+        <p class="error-foot">If this keeps happening, report the issue so it can be checked.</p>
+      </section>
     </main>
   </body>
 </html>

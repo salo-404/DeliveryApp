@@ -2,21 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="error.css" />
-    <title>401 - Unauthorized Access </title>
+    <link rel="stylesheet" href="/error.css" />
+    <title>401 - Unauthorized Access</title>
   </head>
   <body>
-    <main>
-      <div class="stack">
-        <div class="badge">401 - Unauthorized Access</div>
-      </div>
-      <h1>You are not allowed to access this resource</h1>
-      <div class="actions">
-        <a class="button" href="/">Go back to Home</a>
-      </div>
-      <p class="small">
-        If you think this is a mistake, check the URL or contact support.
-      </p>
+    <main class="error-shell">
+      <section class="error-card">
+        <span class="error-kicker">401 Unauthorized</span>
+        <h1 class="error-title">You are not allowed to access this resource.</h1>
+        <p class="error-message">
+          The page exists, but your current session does not have permission to view it.
+        </p>
+        <div class="error-grid">
+          <div class="error-note">
+            <strong>Sign in again</strong>
+            <span>Your session may have expired or does not match the requested area.</span>
+          </div>
+          <div class="error-note">
+            <strong>Use the right account</strong>
+            <span>Try the account type that belongs to this section of the app.</span>
+          </div>
+        </div>
+        <div class="error-actions">
+          <a class="primary" href="/">Go back to Home</a>
+          <a class="secondary" href="javascript:history.back()">Go back</a>
+        </div>
+        <p class="error-foot">If this looks wrong, log in with the correct role and try again.</p>
+      </section>
     </main>
   </body>
 </html>

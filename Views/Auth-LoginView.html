@@ -7,29 +7,52 @@
   </head>
   <body>
     <main>
-      <section>
-        <form method="POST" action="/auth/login">
-          <label
-            >Email Address:
-            <input
-              placeholder="Email Address"
-              type="email"
-              name="userEmail"
-              required
-            />
-          </label>
-          <label
-            >Password:
-            <input
-              placeholder="Password"
-              type="password"
-              name="password"
-              required
-            />
-          </label>
-          <button type="submit">Log in</button>
-        </form>
-      </section>
+      <div class="auth-shell">
+        <section class="auth-brand">
+          <div>
+            <span class="eyebrow">Customer access</span>
+            <h1>Sign in to continue your delivery flow.</h1>
+            <p>
+              Manage orders, revisit favorite restaurants, and keep your delivery
+              details in one place.
+            </p>
+          </div>
+          <div class="auth-points">
+            <div class="auth-point">
+              <strong>Fast ordering</strong>
+              <span>Pick up where you left off without rebuilding your cart.</span>
+            </div>
+            <div class="auth-point">
+              <strong>Clear updates</strong>
+              <span>Track what is active, pending, and already delivered.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="auth-panel">
+          <div class="panel-card">
+            <span class="panel-kicker">Welcome back</span>
+            <h2 class="panel-title">Customer login</h2>
+            <p class="panel-copy">Use your email and password to access your account.</p>
+
+            <form method="POST" action="/auth/login">
+              <label>
+                Email address
+                <input placeholder="you@example.com" type="email" name="userEmail" required />
+              </label>
+              <label>
+                Password
+                <input placeholder="Password" type="password" name="password" required />
+              </label>
+              <button type="submit">Log in</button>
+            </form>
+
+            <p class="auth-foot">
+              New here? <a href="/register">Create a customer account</a>
+            </p>
+          </div>
+        </section>
+      </div>
     </main>
   </body>
 </html>

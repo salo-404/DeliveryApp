@@ -4,7 +4,7 @@ import DeliveryAssignment from "../Models/DeliveryAssignment.mjs";
 import { errorController } from "./ErrorController.mjs";
 import { HTTP_STATUS, UserRoles, OrderStatus } from "../Utils/constants.mjs";
 import { parseBody } from "../Utils/bodyParser.mjs";
-import { issueToken, verifyToken, revokeToken } from "../Utils/token.mjs";
+import { issueToken, verifyToken } from "../Utils/token.mjs";
 import { renderHTML } from "../Utils/renderHTML.mjs";
 import RestaurantRepository from "../Database/RestaurantRepository.mjs";
 import OrderRepository from "../Database/OrderRepository.mjs";
@@ -46,8 +46,7 @@ export const restaurantController = {
   },
 
   logout: async (req, res) => {
-    await revokeToken(req);
-    res.setHeader("Set-Cookie", "token=; HttpOnly; Path=/; Max-Age=0");
+    await RestaurantManager.logout(req, res);
     res.writeHead(HTTP_STATUS.TEMP_REDIRECT, { Location: "/login" });
     res.end();
   },
@@ -62,7 +61,16 @@ export const restaurantController = {
       if (restaurant) {
         const items = await restaurantRepo.findMenuByRestaurantId(restaurant.restaurantId);
         if (items.length) {
-          menuItems = items.map(i => `<li>${i.name} — $${Number(i.price).toFixed(2)}</li>`).join("");
+          menuItems = items.map(i => `
+            <li>
+              <div class="item-row">
+                <div>
+                  <div class="item-title">${i.name}</div>
+                  <div class="item-meta">${i.description ?? "No description provided."}</div>
+                </div>
+                <div class="item-price">$${Number(i.price).toFixed(2)}</div>
+              </div>
+            </li>`).join("");
         }
         const pendingOrders = await orderRepo.findByRestaurantId(restaurant.restaurantId);
         if (pendingOrders.length) {
@@ -70,17 +78,33 @@ export const restaurantController = {
           const courierOptions = couriers.length
             ? couriers.map(c => `<option value="${c.userId}">${c.phoneNumber}</option>`).join("")
             : `<option disabled>No couriers registered</option>`;
-          orders = pendingOrders.map(o => {
+          orders = (await Promise.all(pendingOrders.map(async (o) => {
+            const orderItems = await orderRepo.findItemsByOrderId(o.orderId);
+            const itemSummary = orderItems.length
+              ? orderItems.map(item => `${item.quantity}x ${item.itemName}`).join(", ")
+              : "No items recorded yet.";
+            const totalPrice = orderItems.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0).toFixed(2);
             const canAssign = o.status === OrderStatus.SUBMITTED;
             const assignForm = canAssign
-              ? `<form method="POST" action="/order/assign" style="display:inline; margin-left:1rem;">
+              ? `<form method="POST" action="/order/assign" class="page-actions">
                    <input type="hidden" name="orderId" value="${o.orderId}" />
                    <select name="courierId">${courierOptions}</select>
                    <button type="submit">Assign Courier</button>
                  </form>`
               : "";
-            return `<li>Order ${o.orderId} — <strong>${o.status}</strong>${assignForm}</li>`;
-          }).join("");
+            return `
+              <li>
+                <div class="item-row">
+                  <div>
+                    <strong>Order ${o.orderId.slice(0, 8)}</strong>
+                    <div class="item-meta">${itemSummary}</div>
+                    <div class="item-meta">Total: $${totalPrice}</div>
+                  </div>
+                  <span class="badge status-${String(o.status).toLowerCase().replace(/\s+/g, "-")}">${o.status}</span>
+                </div>
+                ${assignForm}
+              </li>`;
+          }))).join("");
         }
       }
       await renderHTML(res, "Dash-ManagerView.html", {

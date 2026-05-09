@@ -35,7 +35,17 @@ export const pageController = {
       const { userEmail } = await verifyToken(req);
       const restaurants = await restaurantRepo.findAll(); // fetches every restaurant row from the DB
       const restaurantList = restaurants.length
-        ? restaurants.map(r => `<li><a href="/restaurant/menu?id=${r.restaurantId}">${r.restaurantName}</a></li>`).join("") // each restaurant links to its menu page
+        ? restaurants.map(r => `
+            <li class="restaurant-card">
+              <a class="restaurant-link" href="/restaurant/menu?id=${r.restaurantId}">
+                <div class="restaurant-mark">${r.restaurantName.charAt(0).toUpperCase()}</div>
+                <div class="restaurant-copy">
+                  <div class="restaurant-title">${r.restaurantName}</div>
+                  <div class="restaurant-meta">Tap to open the menu and start ordering.</div>
+                </div>
+                <span class="restaurant-cta">Open menu</span>
+              </a>
+            </li>`).join("") // each restaurant links to its menu page
         : "<li class='empty'>No restaurants available yet.</li>"; // fallback when no restaurants are registered
       await renderHTML(res, "User-HomeView.html", {
         userEmail, // injected into {{userEmail}} in the view
@@ -60,9 +70,14 @@ export const pageController = {
       const menuItems = items.length
         ? items.map(i =>
             `<li>
-              <span>${i.name} — $${Number(i.price).toFixed(2)}</span>
-              <br><small>${i.description ?? ""}</small>
-              <form method="POST" action="/cart/add" style="display:inline; margin-left:1rem;">
+              <div class="item-row">
+                <div>
+                  <div class="item-title">${i.name}</div>
+                  <div class="item-meta">${i.description ?? "No description provided."}</div>
+                </div>
+                <div class="item-price">$${Number(i.price).toFixed(2)}</div>
+              </div>
+              <form method="POST" action="/cart/add" class="page-actions">
                 <input type="hidden" name="restaurantId" value="${restaurantId}" />
                 <input type="hidden" name="itemName" value="${i.name}" />
                 <input type="hidden" name="itemPrice" value="${i.price}" />
@@ -81,7 +96,21 @@ export const pageController = {
         const cartRows = await orderRepo.findItemsByOrderId(cartOrder.orderId);
         if (cartRows.length) {
           cartItems = cartRows
-            .map(i => `<li>${i.itemName} × ${i.quantity} — $${(Number(i.price) * i.quantity).toFixed(2)}</li>`)
+            .map(i => `
+              <li>
+                <div class="item-row">
+                  <div>
+                    <div class="item-title">${i.itemName}</div>
+                    <div class="item-meta">Quantity: ${i.quantity}</div>
+                  </div>
+                  <div class="item-price">$${(Number(i.price) * i.quantity).toFixed(2)}</div>
+                </div>
+                <form method="POST" action="/cart/remove" class="item-actions">
+                  <input type="hidden" name="restaurantId" value="${restaurantId}" />
+                  <input type="hidden" name="itemName" value="${i.itemName}" />
+                  <button type="submit" class="danger-button">Remove</button>
+                </form>
+              </li>`)
             .join("");
           totalPrice = cartRows
             .reduce((sum, i) => sum + Number(i.price) * i.quantity, 0)

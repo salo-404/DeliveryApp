@@ -2,25 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="error.css" />
+    <link rel="stylesheet" href="/error.css" />
     <title>404 - Page Not Found</title>
   </head>
   <body>
-    <main>
-      <div class="stack">
-        <div class="badge">404 Not Found</div>
-      </div>
-      <h1>We cannot find this resource</h1>
-      <p>
-        The link might be broken, the page may have moved, or you might not have
-        access.
-      </p>
-      <div class="actions">
-        <a class="button" href="/">Go back to Home</a>
-      </div>
-      <p class="small">
-        If you think this is a mistake, check the URL or contact support.
-      </p>
+    <main class="error-shell">
+      <section class="error-card">
+        <span class="error-kicker">404 Not Found</span>
+        <h1 class="error-title">We cannot find this page.</h1>
+        <p class="error-message">
+          The link may be broken, the page may have moved, or you may not have access to it.
+        </p>
+        <div class="error-grid">
+          <div class="error-note">
+            <strong>Check the address</strong>
+            <span>Verify the URL and make sure every part of the path is correct.</span>
+          </div>
+          <div class="error-note">
+            <strong>Return safely</strong>
+            <span>Use the homepage link below to keep moving through the app.</span>
+          </div>
+        </div>
+        <div class="error-actions">
+          <a class="primary" href="/">Go back to Home</a>
+          <a class="secondary" href="javascript:history.back()">Go back</a>
+        </div>
+        <p class="error-foot">If you think this is a mistake, contact support or try again later.</p>
+      </section>
     </main>
   </body>
 </html>

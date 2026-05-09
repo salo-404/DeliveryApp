@@ -7,31 +7,52 @@
   </head>
   <body>
     <main>
-      <h1 style="margin-bottom: 1.5rem; font-size: 1.4rem; color: #111;">Create your account</h1>
-      <form method="POST" action="/auth/register">
-        <label>
-          Email Address:
-          <input
-            placeholder="you@example.com"
-            type="email"
-            name="userEmail"
-            required
-          />
-        </label>
-        <label>
-          Password:
-          <input
-            placeholder="Password"
-            type="password"
-            name="password"
-            required
-          />
-        </label>
-        <button type="submit">Create Account</button>
-      </form>
-      <p style="margin-top: 1rem; font-size: 0.9rem; color: #777; text-align: center;">
-        Already have an account? <a href="/login" style="color: #00ccbc;">Log in</a>
-      </p>
+      <div class="auth-shell">
+        <section class="auth-brand">
+          <div>
+            <span class="eyebrow">Customer signup</span>
+            <h1>Create a new account in a clean, simple flow.</h1>
+            <p>
+              Register once, then use the same account to explore restaurants and
+              place orders faster.
+            </p>
+          </div>
+          <div class="auth-points">
+            <div class="auth-point">
+              <strong>One profile</strong>
+              <span>Keep your delivery experience organized from the start.</span>
+            </div>
+            <div class="auth-point">
+              <strong>Easy return</strong>
+              <span>Jump straight back into the app whenever you need it.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="auth-panel">
+          <div class="panel-card">
+            <span class="panel-kicker">Start here</span>
+            <h2 class="panel-title">Create your account</h2>
+            <p class="panel-copy">Register with your email and choose a password.</p>
+
+            <form method="POST" action="/auth/register">
+              <label>
+                Email address
+                <input placeholder="you@example.com" type="email" name="userEmail" required />
+              </label>
+              <label>
+                Password
+                <input placeholder="Create a password" type="password" name="password" required />
+              </label>
+              <button type="submit">Create account</button>
+            </form>
+
+            <p class="auth-foot">
+              Already have an account? <a href="/login">Log in</a>
+            </p>
+          </div>
+        </section>
+      </div>
     </main>
   </body>
 </html>

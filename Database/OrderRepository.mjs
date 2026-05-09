@@ -22,6 +22,13 @@ export default class OrderRepository {
     );
   }
 
+  async removeOrderItem(orderId, itemName) {
+    await this.#database.query(
+      `DELETE FROM OrderItem WHERE orderId = ? AND itemName = ?`,
+      [orderId, itemName],
+    );
+  }
+
   // READ
   async findById(orderId) {
     const [rows] = await this.#database.query(

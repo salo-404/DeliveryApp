@@ -7,33 +7,53 @@
   </head>
   <body>
     <nav>
-      <span class="brand">{{restaurantName}}</span>
-      <a href="/home" style="font-size:0.9rem; color:#00ccbc; text-decoration:none;">← Back</a>
+      <span class="brand">Deliveroo <strong>Menu</strong></span>
+      <a class="back-link" href="/home">← Back</a>
     </nav>
 
-    <div class="container">
+    <div class="container dashboard-shell">
+      <section class="hero-card detail-hero">
+        <span class="section-badge">Restaurant menu</span>
+        <div class="order-title">
+          <h1>{{restaurantName}}</h1>
+          <span class="badge">Cart ready</span>
+        </div>
+        <p class="hero-copy">Choose from the menu below, then review your cart before placing the order.</p>
+      </section>
 
       <div class="card">
-        <h2>Menu</h2>
+        <div class="card-header">
+          <div>
+            <span class="section-badge">Menu</span>
+            <h2>Available Items</h2>
+          </div>
+          <p class="subtle-copy">Pick one or more items to add to your cart.</p>
+        </div>
         <ul class="item-list">
           {{menuItems}}
         </ul>
       </div>
 
       <div class="card">
-        <h2>Your Cart</h2>
+        <div class="card-header">
+          <div>
+            <span class="section-badge">Cart</span>
+            <h2>Your Cart</h2>
+          </div>
+          <p class="subtle-copy">Review the current cart before confirming the order.</p>
+        </div>
         <ul class="item-list">
           {{cartItems}}
         </ul>
-        <p style="margin-top:1rem; font-weight:700; font-size:1.05rem;">
-          Total: <span style="color:#00ccbc;">${{totalPrice}}</span>
+        <p class="cart-total">
+          <span>Total</span>
+          <span>${{totalPrice}}</span>
         </p>
-        <form method="POST" action="/order/create" style="margin-top:1rem;">
+        <form method="POST" action="/order/create" class="page-actions">
           <input type="hidden" name="restaurantId" value="{{restaurantId}}" />
           <button type="submit" {{checkoutDisabled}}>Place Order</button>
         </form>
       </div>
-
     </div>
   </body>
 </html>

@@ -2,25 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="error.css" />
+    <link rel="stylesheet" href="/error.css" />
     <title>400 - Bad Request</title>
   </head>
   <body>
-    <main>
-      <div class="stack">
-        <div class="badge">400 Bad Request</div>
-      </div>
-      <h1>This is a bad request</h1>
-      <p>
-        The link might be broken, the page may have moved, or you might not have
-        access.
-      </p>
-      <div class="actions">
-        <a class="button" href="/">Go back to Home</a>
-      </div>
-      <p class="small">
-        If you think this is a mistake, check the URL or contact support.
-      </p>
+    <main class="error-shell">
+      <section class="error-card">
+        <span class="error-kicker">400 Bad Request</span>
+        <h1 class="error-title">This request could not be processed.</h1>
+        <p class="error-message">
+          The link may be broken, the page may have moved, or the request may have been malformed.
+        </p>
+        <div class="error-grid">
+          <div class="error-note">
+            <strong>Check the URL</strong>
+            <span>Make sure the path is complete and does not contain a typo.</span>
+          </div>
+          <div class="error-note">
+            <strong>Try again</strong>
+            <span>Reload the page or return to the homepage and continue from there.</span>
+          </div>
+        </div>
+        <div class="error-actions">
+          <a class="primary" href="/">Go back to Home</a>
+          <a class="secondary" href="javascript:history.back()">Go back</a>
+        </div>
+        <p class="error-foot">If the problem persists, contact support with the page details.</p>
+      </section>
     </main>
   </body>
 </html>

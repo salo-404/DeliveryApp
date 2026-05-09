@@ -7,23 +7,43 @@
   </head>
   <body>
     <nav>
-      <span class="brand">Deliveroo</span>
+      <span class="brand">Deliveroo <strong>Customer</strong></span>
       <form method="POST" action="/auth/logout">
         <button type="submit">Log out</button>
       </form>
     </nav>
 
-    <div class="container">
-      <h1 style="font-size:1.3rem; color:#111;">
-        Welcome back, <strong>{{userEmail}}</strong>
-      </h1>
+    <div class="container dashboard-shell">
+      <section class="hero-card">
+        <span class="section-badge">Customer dashboard</span>
+        <h1>Welcome back, {{userEmail}}</h1>
+        <p>
+          Browse restaurants, review your current options, and keep your next order close at hand.
+        </p>
+        <div class="hero-metrics">
+          <div class="metric">
+            <strong>Simple browsing</strong>
+            <span>Find restaurants without distractions.</span>
+          </div>
+          <div class="metric">
+            <strong>Fast ordering</strong>
+            <span>Move from discovery to checkout quickly.</span>
+          </div>
+        </div>
+      </section>
 
-      <div class="card">
-        <h2>Available Restaurants</h2>
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <span class="section-badge">Restaurants</span>
+            <h2>Available Restaurants</h2>
+          </div>
+          <p class="subtle-copy">Choose a place to open its menu and start ordering.</p>
+        </div>
         <ul class="item-list">
           {{restaurantList}}
         </ul>
-      </div>
+      </section>
     </div>
   </body>
 </html>

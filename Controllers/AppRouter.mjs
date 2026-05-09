@@ -45,6 +45,7 @@ router.add("POST", "/restaurant/menu/add", restaurantController.addMenuItem); //
 
 // Cart & Orders
 router.add("POST", "/cart/add", orderController.addToCart); // adds one item to the customer's in-progress cart
+router.add("POST", "/cart/remove", orderController.removeFromCart); // removes one item from the customer's in-progress cart
 router.add("POST", "/order/create", orderController.create); // submits the in-progress cart as a placed order
 router.add("GET", "/order", orderController.view); // serves the order detail page — expects ?id= query param
 router.add("POST", "/order/cancel", orderController.cancel); // handles order cancellation from the order detail page

@@ -7,21 +7,52 @@
   </head>
   <body>
     <main>
-      <h1 style="margin-bottom: 1.5rem; font-size: 1.4rem; color: #111;">Courrier Login</h1>
-      <form method="POST" action="/courrier/login">
-        <label>
-          Phone Number:
-          <input placeholder="+1 555 000 0000" type="tel" name="phoneNumber" required />
-        </label>
-        <label>
-          Password:
-          <input placeholder="Password" type="password" name="password" required />
-        </label>
-        <button type="submit">Log in</button>
-      </form>
-      <p style="margin-top: 1rem; font-size: 0.9rem; color: #777; text-align: center;">
-        New courrier? <a href="/courrier/register" style="color: #00ccbc;">Register</a>
-      </p>
+      <div class="auth-shell">
+        <section class="auth-brand">
+          <div>
+            <span class="eyebrow">Courrier access</span>
+            <h1>Sign in to manage your delivery route.</h1>
+            <p>
+              Review assignments, stay on top of status changes, and keep your
+              workday focused.
+            </p>
+          </div>
+          <div class="auth-points">
+            <div class="auth-point">
+              <strong>Route clarity</strong>
+              <span>See what needs attention without extra noise.</span>
+            </div>
+            <div class="auth-point">
+              <strong>Focused handoff</strong>
+              <span>Check delivery details quickly before heading out.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="auth-panel">
+          <div class="panel-card">
+            <span class="panel-kicker">Courrier login</span>
+            <h2 class="panel-title">Welcome back</h2>
+            <p class="panel-copy">Use your phone number and password to sign in.</p>
+
+            <form method="POST" action="/courrier/login">
+              <label>
+                Phone number
+                <input placeholder="+1 555 000 0000" type="tel" name="phoneNumber" required />
+              </label>
+              <label>
+                Password
+                <input placeholder="Password" type="password" name="password" required />
+              </label>
+              <button type="submit">Log in</button>
+            </form>
+
+            <p class="auth-foot">
+              New courrier? <a href="/courrier/register">Register</a>
+            </p>
+          </div>
+        </section>
+      </div>
     </main>
   </body>
 </html>
