@@ -33,7 +33,7 @@ export default class RestaurantManager extends User {
   static async login(restaurantName, password) {
     logger.debug("Looking up the restaurant manager before password verification.");
     const repo = new RestaurantManagerRepository();
-    const account = await repo.findByRestaurantName(restaurantName); // looks up the manager by restaurant name
+    const account = await repo.findByRestaurantName(restaurantName); // looks up the manager by restaurant name.
     if (!account) {
       logger.warn("Restaurant manager login failed because the restaurant name was not found.");
       throw new Error("Restaurant not found"); // no account exists for this restaurant name
