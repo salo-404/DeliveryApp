@@ -275,7 +275,7 @@ A singleton that reads all environment variables at startup, validates required 
 ## UI Preview
 
 ### Login Page
-("<img width="1532" height="793" alt="image" src="https://github.com/user-attachments/assets/1aef5e03-c70e-4149-af06-67093ae77ee6" />
+"<img width="1532" height="793" alt="image" src="https://github.com/user-attachments/assets/1aef5e03-c70e-4149-af06-67093ae77ee6" />
  
 
 ### Customer Dashboard
@@ -289,16 +289,12 @@ A singleton that reads all environment variables at startup, validates required 
 
 
 ### Courier Dashboard
-img width="1881" height="952" alt="image" src="https://github.com/user-attachments/assets/5dec9e23-4117-4dd5-997d-cd5965535dc2" />
+<img width="1881" height="952" alt="image" src="https://github.com/user-attachments/assets/5dec9e23-4117-4dd5-997d-cd5965535dc2" />
 
 
 ### Error Page
 <img width="1126" height="831" alt="image" src="https://github.com/user-attachments/assets/a7e37e34-0927-48f9-9c13-4f43622fde76" />
 
 
----
 
-| **Customer** | Register, log in, browse restaurants, build a cart, place and cancel orders |
-| **Restaurant Manager** | Register, log in, manage their menu, view incoming orders, assign a courier |
-| **Courier** | Register, log in, view assigned deliveries, update delivery status |
 
