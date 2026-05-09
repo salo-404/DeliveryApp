@@ -275,28 +275,30 @@ A singleton that reads all environment variables at startup, validates required 
 ## UI Preview
 
 ### Login Page
-![Login Page]("C:\Users\user\Desktop\uni\sem6\web\DeliveryApp\screens uiux\login page .png")
+![Login Page]("<img width="1532" height="793" alt="image" src="https://github.com/user-attachments/assets/1aef5e03-c70e-4149-af06-67093ae77ee6" />
+ 
+")
 
 ### Customer Dashboard
-![Customer Dashboard](Public/screenshots/customer-dashboard.png)
+![Customer Dashboard](<img width="1874" height="799" alt="image" src="https://github.com/user-attachments/assets/d3faef46-bccf-4f5b-828b-e71974d83067" />
+)
 
 ### Restaurant Dashboard
-![Restaurant Dashboard](Public/screenshots/restaurant-dashboard.png)
+![Restaurant Dashboard](<img width="1876" height="923" alt="image" src="https://github.com/user-attachments/assets/47eac1f2-e6e1-400e-9ad9-b19af0bf9be2" />
+)
+(<img width="1874" height="959" alt="image" src="https://github.com/user-attachments/assets/ee1a38a7-a144-459c-8a5e-967a636f25b8" />
+)
 
 ### Courier Dashboard
-![Courier Dashboard](Public/screenshots/courier-dashboard.png)
+![Courier Dashboard](<img width="1881" height="952" alt="image" src="https://github.com/user-attachments/assets/5dec9e23-4117-4dd5-997d-cd5965535dc2" />
+)
 
 ### Error Page
-![Error Page](Public/screenshots/error.png)
+![Error Page](<img width="1126" height="831" alt="image" src="https://github.com/user-attachments/assets/a7e37e34-0927-48f9-9c13-4f43622fde76" />
+)
 
 ---
 
-## Project Overview
-
-### What the app does
-
-| Actor | Can do |
-|---|---|
 | **Customer** | Register, log in, browse restaurants, build a cart, place and cancel orders |
 | **Restaurant Manager** | Register, log in, manage their menu, view incoming orders, assign a courier |
 | **Courier** | Register, log in, view assigned deliveries, update delivery status |
