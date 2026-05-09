@@ -9,7 +9,7 @@ export default class Config {
   }
 
   constructor() {
-    // Read env values once so the rest of the app uses one trusted source.
+    // Read env values once so the rest of the app uses one trusted source
     this.port = Number(process.env.PORT);
     this.dbHost = process.env.DB_HOST;
     this.dbPort = Number(process.env.DB_PORT);
