@@ -30,7 +30,7 @@ export default class Customer extends User {
     try {
       await repo.createUser(userId, email, hashedPassword); // persists the new customer to the DB
     } catch (error) {
-      logger.error(error instanceof Error ? error.message : String(error)); // keep the app moving even if the write fails
+      logger.error(error instanceof Error ? error.message : String(error)); // keep the app moving even if the write fails.
     }
     return newCustomer; // returns the Customer instance even if DB write failed — caller cannot tell the difference
   }
